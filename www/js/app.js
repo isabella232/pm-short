@@ -56,7 +56,9 @@ var onWindowLoaded = function() {
                 d['price'] = +d['price']
             });
 
-            render();
+            if (currentData) {
+                render();
+            }
 
         });
     }
