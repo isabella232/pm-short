@@ -1,0 +1,1 @@
+* * * * * ubuntu /bin/bash /home/ubuntu/apps/pm_short/repository/run_on_server.sh fab $DEPLOYMENT_TARGET cron_jobs.test >/var/log/pm_short/crontab.log 2>&1
