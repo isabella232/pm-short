@@ -34,7 +34,7 @@ ASSETS_SLUG = 'pm-short'
 DEPLOYMENT
 """
 PRODUCTION_S3_BUCKET = {
-    'bucket_name': 'howisplanetmoneydoing.com',
+    'bucket_name': 'www.howisplanetmoneydoing.com',
     'region': 'us-east-1'
 }
 
