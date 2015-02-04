@@ -3,12 +3,14 @@
 """
 Commands that update or process the application data.
 """
+import csv
 from datetime import datetime
 import json
 
 from fabric.api import task
 from facebook import GraphAPI
 from twitter import Twitter, OAuth
+import ystockquote
 
 import app_config
 import copytext
@@ -19,6 +21,30 @@ def update():
     Stub function for updating app-specific data.
     """
     #update_featured_social()
+
+@task
+def update_price():
+    # pull today
+    now = datetime.now()
+    today = ("%s-%02d-%02d" % (now.year, now.month, now.day))
+    quotes = ystockquote.get_historical_prices('SPY', '2015-01-15', today) #pull data
+
+    #writing json
+    with open('www/live-data/price.json', 'w') as file:
+        json.dump(quotes,file)
+
+    #get current price
+    current_price = ystockquote.get_price('SPY')
+    current_date = now.strftime('%Y-%m-%d')
+    current_time = now.strftime('%H:%M:%S')
+
+    current_value = str(current_date) + "," + str(current_time) + "," + str(current_price)
+    header = "date,time,price"
+
+    with open('www/live-data/current.csv', 'wb') as f:
+        fwriter = csv.writer(f, delimiter=" ")
+        fwriter.writerow([header])
+        fwriter.writerow([current_value])
 
 @task
 def update_featured_social():
