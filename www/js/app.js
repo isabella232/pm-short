@@ -56,6 +56,7 @@ var onWindowLoaded = function() {
 
                 render();
 
+                $(window).on("resize", _.throttle(render, 250));
             });
         });
     }
@@ -64,11 +65,8 @@ var onWindowLoaded = function() {
 /*
  * RENDER THE GRAPHIC
  */
-var render = function(containerWidth) {
-    // fallback if page is loaded outside of an iframe
-    if (!containerWidth) {
-        containerWidth = GRAPHIC_DEFAULT_WIDTH;
-    }
+var render = function() {
+    var containerWidth = $(window).width();
 
     // check the container width; set mobile flag if applicable
     if (containerWidth <= MOBILE_THRESHOLD) {
