@@ -36,30 +36,27 @@ var onWindowLoaded = function() {
         $graphic = $('#graphic');
 
         d3.json("live-data/price.json", function(error, json) {
-          if (error) return console.warn(error);
-          // data = json;
-          graphicData = d3.entries(json);
+            if (error) return console.warn(error);
+            // data = json;
+            graphicData = d3.entries(json);
           
-          graphicData.forEach(function(d) {
-            d['key'] = d3.time.format('%Y-%m-%d').parse(d['key']);
-          });
-          
-          graphicData.sort(sortTheseKeys);
-          
-        });
-
-        d3.csv(GRAPHIC_DATA_URL, function(error, data) {
-            currentData = data;
-            currentData.forEach(function(d) {
-                d['date'] = d3.time.format('%Y-%m-%d').parse(d['date']);
-                d['time'] = d3.time.format('%H:%M:%S').parse(d['time']);
-                d['price'] = +d['price']
+            graphicData.forEach(function(d) {
+                d['key'] = d3.time.format('%Y-%m-%d').parse(d['key']);
             });
+          
+            graphicData.sort(sortTheseKeys);
+        
+            d3.csv(GRAPHIC_DATA_URL, function(error, data) {
+                currentData = data;
+                currentData.forEach(function(d) {
+                    d['date'] = d3.time.format('%Y-%m-%d').parse(d['date']);
+                    d['time'] = d3.time.format('%H:%M:%S').parse(d['time']);
+                    d['price'] = +d['price']
+                });
 
-            if (currentData) {
                 render();
-            }
 
+            });
         });
     }
 }
