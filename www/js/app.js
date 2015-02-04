@@ -84,29 +84,32 @@ var render = function(containerWidth) {
     $graphic.empty();
 
 
+
 currentPrice = currentData[0]['price']
+currentDate = currentData[0]['date']
+currentTime = currentData[0]['time']
+
 
 var deltaLevel = (199.91-currentPrice)*2
-var deltaPercent = d3.round(100*((199.91-currentPrice)/199.91),2) + "%"
+var deltaPercent = Math.abs(d3.round(100*((199.91-currentPrice)/199.91),2)) + "%"
 
+console.log(currentPrice)
 console.log(deltaLevel)
-console.log(deltaPercent)
 
 if (currentPrice > 199.91) {
     $('.reply-title').text("NO").css('color', '#d30015');
-    $('.reply-paren').html("So far we lost  <em class = 'negative'>$" + d3.round(deltaLevel,2) + " (" + deltaPercent + " on our short.</em>");
+    $('.reply-paren').html("If we cashed out now, we would lose <em class = 'negative'>$" + d3.round(Math.abs(deltaLevel),2) + " (" + deltaPercent + ") </em> on our short.*");
     }
 
 if (currentPrice < 199.91) {
     console.log('fired')
     $('.reply-title').text("YES").css('color', '#17807E' );
-    $('.reply-paren').html("So far we made  <em class = 'positive'>$" + d3.round(deltaLevel,2) + " (" + deltaPercent + " on our short.)</em>");
+    $('.reply-paren').html("If we cashed out now, we would make <em class = 'positive'>$" + d3.round(Math.abs(deltaLevel),2) + " (" + deltaPercent + ") </em> on our short.*");
     }
 
 if (currentPrice == 199.91) {
     $('.reply-title').html("NOT Really, We're even").css('color', '#EFC637');
     }
-
 // neeed to put in block
 
 
@@ -411,16 +414,16 @@ var lastPrice = lastValue['amt']
 var dailyChange = currentPrice - lastPrice 
 var dailyPct = ((100*(currentPrice - lastPrice)/lastPrice))
 
-console.log(dailyChange)
 if (dailyChange > 0) {
-    $('.reply-deck').html("The stock market is  <em class = 'positive'>up $" + d3.round(dailyChange,2) + " (" + d3.round(dailyPct,2) + ")%.</em> That's good for most people, but bad for us.");
+    $('.reply-deck').html("Right now, <em class = 'positive'>the stock market is up.</em> </br>That's good for most people, but bad for us.");
 }
 
 if (dailyChange < 0) {
-    $('.reply-deck').html(" The stock market is <em class = 'negative'>down $" + d3.round(Math.abs(dailyChange),2) + " (" + d3.round(Math.abs(dailyPct),2) + ")%.</em> That's bad for most people, but good for us.");
+    $('.reply-deck').html("Right now, <em class = 'negative'>the stock market is down.</em> </br>That's bad for most people, but good for us.");
 }
 
 }
+
 
 
 
