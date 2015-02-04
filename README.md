@@ -30,7 +30,7 @@ pm-short
 What is this?
 -------------
 
-**TKTK: Describe pm-short here.**
+Planet Money short microsite.
 
 Assumptions
 -----------

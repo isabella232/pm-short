@@ -57,13 +57,10 @@ var onWindowLoaded = function() {
             });
 
             render();
-            
+
         });
     }
 }
-
-
-
 
 /*
  * RENDER THE GRAPHIC
