@@ -14,6 +14,7 @@ import ystockquote
 
 import app_config
 import copytext
+import flat
 
 @task(default=True)
 def update():
@@ -46,6 +47,13 @@ def update_price():
         fwriter = csv.writer(f, delimiter=" ")
         fwriter.writerow([header])
         fwriter.writerow([current_value])
+
+    if app_config.DEPLOYMENT_TARGET:
+        flat.deploy_folder(
+            'www/live-data',
+            'live-data',
+            max_age=app_config.DEFAULT_MAX_AGE
+        )       
 
 @task
 def update_featured_social():

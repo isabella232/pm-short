@@ -34,12 +34,12 @@ ASSETS_SLUG = 'pm-short'
 DEPLOYMENT
 """
 PRODUCTION_S3_BUCKET = {
-    'bucket_name': 'apps.npr.org',
+    'bucket_name': 'howisplanetmoneydoing.com',
     'region': 'us-east-1'
 }
 
 STAGING_S3_BUCKET = {
-    'bucket_name': 'stage-apps.npr.org',
+    'bucket_name': 'staging.howisplanetmoneydoing.com',
     'region': 'us-east-1'
 }
 
@@ -52,10 +52,10 @@ DEFAULT_MAX_AGE = 20
 ASSETS_MAX_AGE = 86400
 
 PRODUCTION_SERVERS = ['cron.nprapps.org']
-STAGING_SERVERS = ['50.112.92.131']
+STAGING_SERVERS = ['cron-staging.nprapps.org']
 
 # Should code be deployed to the web/cron servers?
-DEPLOY_TO_SERVERS = False
+DEPLOY_TO_SERVERS = True
 
 SERVER_USER = 'ubuntu'
 SERVER_PYTHON = 'python2.7'
@@ -65,7 +65,7 @@ SERVER_VIRTUALENV_PATH = '%s/virtualenv' % SERVER_PROJECT_PATH
 
 # Should the crontab file be installed on the servers?
 # If True, DEPLOY_TO_SERVERS must also be True
-DEPLOY_CRONTAB = False
+DEPLOY_CRONTAB = True
 
 # Should the service configurations be installed on the servers?
 # If True, DEPLOY_TO_SERVERS must also be True
@@ -94,13 +94,13 @@ DEBUG = True
 """
 COPY EDITING
 """
-COPY_GOOGLE_DOC_KEY = '0AlXMOHKxzQVRdHZuX1UycXplRlBfLVB0UVNldHJYZmc'
+COPY_GOOGLE_DOC_KEY = None
 COPY_PATH = 'data/copy.xlsx'
 
 """
 SHARING
 """
-SHARE_URL = 'http://%s/%s/' % (PRODUCTION_S3_BUCKET['bucket_name'], PROJECT_SLUG)
+SHARE_URL = 'http://%s/' % PRODUCTION_S3_BUCKET['bucket_name']
 
 """
 ADS
@@ -158,8 +158,8 @@ def configure_targets(deployment_target):
 
     if deployment_target == 'production':
         S3_BUCKET = PRODUCTION_S3_BUCKET
-        S3_BASE_URL = 'http://%s/%s' % (S3_BUCKET['bucket_name'], PROJECT_SLUG)
-        S3_DEPLOY_URL = 's3://%s/%s' % (S3_BUCKET['bucket_name'], PROJECT_SLUG)
+        S3_BASE_URL = 'http://%s' % S3_BUCKET['bucket_name']
+        S3_DEPLOY_URL = 's3://%s' % S3_BUCKET['bucket_name']
         SERVERS = PRODUCTION_SERVERS
         SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
         SERVER_LOG_PATH = '/var/log/%s' % PROJECT_FILENAME
@@ -167,8 +167,8 @@ def configure_targets(deployment_target):
         DEBUG = False
     elif deployment_target == 'staging':
         S3_BUCKET = STAGING_S3_BUCKET
-        S3_BASE_URL = 'http://%s/%s' % (S3_BUCKET['bucket_name'], PROJECT_SLUG)
-        S3_DEPLOY_URL = 's3://%s/%s' % (S3_BUCKET['bucket_name'], PROJECT_SLUG)
+        S3_BASE_URL = 'http://%s' % S3_BUCKET['bucket_name']
+        S3_DEPLOY_URL = 's3://%s' % S3_BUCKET['bucket_name']
         SERVERS = STAGING_SERVERS
         SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
         SERVER_LOG_PATH = '/var/log/%s' % PROJECT_FILENAME
