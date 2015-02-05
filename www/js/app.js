@@ -128,9 +128,9 @@ var drawGraph = function(graphicWidth) {
     var graph = d3.select('#graphic');
     var margin = {
         top: 5,
-        right: 30,
+        right: 80,
         bottom: 30,
-        left: 40
+        left: 90
     };
     var ticksX;
     var ticksY;
@@ -141,11 +141,13 @@ var drawGraph = function(graphicWidth) {
         aspectHeight = 3;
         ticksX = 3;
         ticksY = 5;
+        fontSize = '14px';
     } else {
         aspectWidth = 16;
         aspectHeight = 9;
         ticksX = 10;
         ticksY = 10;
+        fontSize = '18px'
     }
 
     // define chart dimensions
@@ -351,23 +353,22 @@ var svgWidth =  width + margin['left'] + margin['right']
     var annotation = svg.append('g')
         .attr('class', 'good-us')
         .append('text')
-        .attr('x', (svgWidth)/2)
-        .attr('dx', -20)        
+        .attr('x', (width)/2)
         .attr('y', y(192))
         .attr('text-anchor', 'middle')
+        .attr('font-size', fontSize)                     
         .text('Good For Us')
 
-        svg.append('g')
+    var badUs = svg.append('g')
         .attr('class', 'bad-us')
         .append('text')
-        .attr('x', (svgWidth)/2)
-        .attr('dx', -20)
+        .attr('x', (width)/2)
         .attr('y', y(208))
         .attr('text-anchor', 'middle')
-
+        .attr('font-size', fontSize)        
         .text('Bad For Us')
 
-        svg.append('g')
+    var goodUs = svg.append('g')
         .attr('class', 'label current-price')
         .append('text')
         .attr('x', x(lastValue['date']))
@@ -394,7 +395,7 @@ var svgWidth =  width + margin['left'] + margin['right']
         .attr('y', y(firstValue['amt']))
         .attr('dx', 0)
         .attr('dy', 15)
-        .attr('text-anchor', 'start')        
+        .attr('text-anchor', 'start')   
         .text('Buy Price $' + firstValue['amt'] )          
 
         svg.append('g')
@@ -407,16 +408,16 @@ var svgWidth =  width + margin['left'] + margin['right']
         .attr('text-anchor', 'start')
         .text("Buy Date: " + fmtYearFull(firstValue['date'] ))        
 
-var lastPrice = lastValue['amt']
-var dailyChange = currentPrice - lastPrice 
-var dailyPct = ((100*(currentPrice - lastPrice)/lastPrice))
+var firstPrice = firstValue['amt']
+var dailyChange = currentPrice - firstPrice 
+var dailyPct = ((100*(currentPrice - firstPrice)/firstPrice))
 
 if (dailyChange > 0) {
-    $('.reply-deck').html("Right now, <em class = 'positive'>the stock market is up.</em> </br>That's good for most people, but bad for us.");
+    $('.reply-deck').html("Right now, <em class = 'positive'>the stock market is up</em> since we shorted it. </br>That's good for most people, but bad for us.");
 }
 
 if (dailyChange < 0) {
-    $('.reply-deck').html("Right now, <em class = 'negative'>the stock market is down.</em> </br>That's bad for most people, but good for us.");
+    $('.reply-deck').html("Right now, <em class = 'negative'>the stock market is down</em> since we shorted it. </br>That's bad for most people, but good for us.");
 }
 
 }
