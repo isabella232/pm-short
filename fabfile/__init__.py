@@ -164,7 +164,7 @@ def deploy(remote='origin'):
 
     flat.deploy_folder(
         'www/assets',
-        '%s/assets' % app_config.PROJECT_SLUG,
+        'assets',
         max_age=app_config.ASSETS_MAX_AGE
     )
 
