@@ -76,7 +76,6 @@ var render = function() {
     }
 
 
-//    console.log(graphicData[0])
     // clear out existing graphics
     $graphic.empty();
 
@@ -90,8 +89,6 @@ currentTime = currentData[0]['time']
 var deltaLevel = (199.91-currentPrice)*2
 var deltaPercent = Math.abs(d3.round(100*((199.91-currentPrice)/199.91),2)) + "%"
 
-console.log(currentPrice)
-console.log(deltaLevel)
 
 if (currentPrice > 199.91) {
     $('.reply-title').text("NO").css('color', '#d30015');
@@ -99,7 +96,6 @@ if (currentPrice > 199.91) {
     }
 
 if (currentPrice < 199.91) {
-    console.log('fired')
     $('.reply-title').text("YES").css('color', '#17807E' );
     $('.reply-paren').html("If we cashed out now, we would make <em class = 'positive'>$" + d3.round(Math.abs(deltaLevel),2) + " (" + deltaPercent + ") </em> on our short.*");
     }
@@ -128,9 +124,9 @@ var drawGraph = function(graphicWidth) {
     var graph = d3.select('#graphic');
     var margin = {
         top: 5,
-        right: 80,
+        right: 30,
         bottom: 30,
-        left: 90
+        left: 50
     };
     var ticksX;
     var ticksY;
@@ -143,9 +139,15 @@ var drawGraph = function(graphicWidth) {
         ticksY = 5;
         fontSize = '14px';
     } else {
+        margin = {
+            top: 5,
+            right: 150,
+            bottom: 30,
+            left: 160
+        };
         aspectWidth = 16;
         aspectHeight = 9;
-        ticksX = 10;
+        ticksX = 6;
         ticksY = 10;
         fontSize = '18px'
     }
@@ -175,20 +177,20 @@ var drawGraph = function(graphicWidth) {
         return d['date'];
     }));
 
-    // y.domain([190,210])
-
-    y.domain([ d3.min(d3.entries(formattedData), function(c) { 
+    var minValue = d3.min(d3.entries(formattedData), function(c) { 
             return d3.min(c['value'], function(v) { 
                 var n = v['amt'];
                 return Math.floor(n/10) * 10; 
             }); 
-        }), d3.max(d3.entries(formattedData), function(c) { 
+        });
+    var maxValue = d3.max(d3.entries(formattedData), function(c) { 
             return d3.max(c['value'], function(v) { 
                 var n = v['amt'];
                 return Math.ceil(n/10) * 10; // round to next 10
             }); 
-        })
-    ]);
+        });
+
+    y.domain([ minValue, maxValue]);
 
     // define axis and grid
     var xAxis = d3.svg.axis()
@@ -236,6 +238,7 @@ var drawGraph = function(graphicWidth) {
 var dateLength = formattedData['SPY'].length
 var lastValue = formattedData['SPY'][0]
 var firstValue = formattedData['SPY'][dateLength-1]
+formattedData['SPY'][dateLength-1]['amt'] = 199.91
 var svgWidth =  width + margin['left'] + margin['right']
     // draw the chart
     var svg = graph.append('svg')
@@ -249,7 +252,7 @@ var svgWidth =  width + margin['left'] + margin['right']
       .attr("id", "stock-gradient")
       .attr("gradientUnits", "userSpaceOnUse")
       .attr("x1", 0).attr("y1", y(200.31))
-      .attr("x2", 0).attr("y2", y(199.61))
+      .attr("x2", 0).attr("y2", y(199.91))
     .selectAll("stop")
       .data([
         {offset: "0%", color: '#d30015'},
@@ -296,8 +299,6 @@ var svgWidth =  width + margin['left'] + margin['right']
             .tickSize(-width, 0, 0)
             .tickFormat('')
         );
-    
-
 
     // draw the line(s)
     svg.append('g')
@@ -309,14 +310,34 @@ var svgWidth =  width + margin['left'] + margin['right']
             .attr('class', function(d, i) {
                 return 'line line-' + i + ' ' + classify(d['key']);
             })
-            // .attr('stroke', function(d) {
-            //     return colorD3(d['key']);
-            // })
             .attr('d', function(d) {
                 return line(d['value']);
             });  
 
-    svg.append('g')
+    var rectHeight =   y(minValue) - y(199.91)
+    var rectHeightHalf =  y(199.91)
+
+    var badUsRect = svg.append('g')
+        .attr('class', 'bad-us-rect')
+        .append('rect')
+        .attr('x', 0)
+        .attr('width', width)
+        .attr('y', 0)
+        .attr('height', rectHeightHalf-3)
+        .style('fill', colors['red6'])
+        .style('opacity',.5)
+
+    var goodUsRect = svg.append('g')
+        .attr('class', 'good-us-rect')
+        .append('rect')
+        .attr('x', 0)
+        .attr('width', width)
+        .attr('y', rectHeightHalf)
+        .attr('height', rectHeight)        
+        .style('fill', colors['teal5'])
+        .style('opacity',.3)
+
+    var area = svg.append('g')
         .attr('class', 'area')
         .selectAll('path')
         .data(d3.entries(formattedData))
@@ -325,16 +346,10 @@ var svgWidth =  width + margin['left'] + margin['right']
             .attr('class', function(d, i) {
                 return 'area area-' + i + ' ' + classify(d['key']);
             })
-            // .attr('stroke', function(d) {
-            //     return colorD3(d['key']);
-            // })
             .attr('d', function(d) {
-                // if (d['value'] > 199) {
                 return area(d['value'])
-                // } else {
-                // ;
-                // }
-            });    
+            })
+        .style('fill', colors['blue3']);    
 
     svg.append('g')
         .attr('class', 'lastvalue')
@@ -342,6 +357,7 @@ var svgWidth =  width + margin['left'] + margin['right']
         .attr('cx', x(lastValue['date']))
         .attr('cy', y(lastValue['amt']))
         .attr('r', 6);
+
     
     svg.append('g')
         .attr('class', 'lastvalue')
@@ -421,8 +437,6 @@ if (dailyChange < 0) {
 }
 
 }
-
-
 
 
 /*
