@@ -35,7 +35,7 @@ var onWindowLoaded = function() {
     if (Modernizr.svg) {
         $graphic = $('#graphic');
 
-        d3.json("live-data/price.json", function(error, json) {
+        d3.json("live-data/price-final.json", function(error, json) {
             if (error) return console.warn(error);
             // data = json;
             graphicData = d3.entries(json);
@@ -89,20 +89,22 @@ currentTime = currentData[0]['time']
 var deltaLevel = (199.91-currentPrice)*2
 var deltaPercent = Math.abs(d3.round(100*((199.91-currentPrice)/199.91),2)) + "%"
 
-
-if (currentPrice > 199.91) {
     $('.reply-title').text("NO").css('color', '#d30015');
-    $('.reply-paren').html("If we cashed out now, we would lose <em class = 'negative'>$" + d3.round(Math.abs(deltaLevel),2) + " (" + deltaPercent + ") </em> on our short.*");
-    }
+    $('.reply-paren').html("We lost $22.06 (or 6%). </br> </br>But if you include fees, we lost grand total of $42.02 (or 11%) on our investment.").css('color', '#d30015') ;
 
-if (currentPrice < 199.91) {
-    $('.reply-title').text("YES").css('color', '#17807E' );
-    $('.reply-paren').html("If we cashed out now, we would make <em class = 'positive'>$" + d3.round(Math.abs(deltaLevel),2) + " (" + deltaPercent + ") </em> on our short.*");
-    }
+// if (currentPrice > 199.91) {
+    // $('.reply-title').text("NO").css('color', '#d30015');
+//     $('.reply-paren').html("If we cashed out now, we would lose <em class = 'negative'>$" + d3.round(Math.abs(deltaLevel),2) + " (" + deltaPercent + ") </em> on our short.*");
+//     }
 
-if (currentPrice == 199.91) {
-    $('.reply-title').html("NOT Really, We're even").css('color', '#EFC637');
-    }
+// if (currentPrice < 199.91) {
+//     $('.reply-title').text("YES").css('color', '#17807E' );
+//     $('.reply-paren').html("If we cashed out now, we would make <em class = 'positive'>$" + d3.round(Math.abs(deltaLevel),2) + " (" + deltaPercent + ") </em> on our short.*");
+//     }
+
+// if (currentPrice == 199.91) {
+//     $('.reply-title').html("NOT Really, We're even").css('color', '#EFC637');
+//     }
 // neeed to put in block
 
 
@@ -172,10 +174,15 @@ var drawGraph = function(graphicWidth) {
 //            return d['amt'].length > 0;
         });
 
+    var dateFormat = d3.time.format("%Y-%m-%d"),
+        lastDate1 = dateFormat.parse("2015-03-03"),
+        firstDate1 = dateFormat.parse("2015-01-15");
+
+
     // set the data domain
-    x.domain(d3.extent(formattedData['SPY'], function(d) { 
-        return d['date'];
-    }));
+    x.domain([firstDate1,lastDate1]);
+
+
 
     var minValue = d3.min(d3.entries(formattedData), function(c) { 
             return d3.min(c['value'], function(v) { 
@@ -428,13 +435,13 @@ var firstPrice = firstValue['amt']
 var dailyChange = currentPrice - firstPrice 
 var dailyPct = ((100*(currentPrice - firstPrice)/firstPrice))
 
-if (dailyChange > 0) {
-    $('.reply-deck').html("Right now, <em class = 'positive'>the stock market is up</em> since we shorted it. </br>That's good for most people, but bad for us.");
-}
+// if (dailyChange > 0) {
+//     $('.reply-deck').html("Right now, <em class = 'positive'>the stock market is up</em> since we shorted it. </br>That's good for most people, but bad for us.");
+// }
 
-if (dailyChange < 0) {
-    $('.reply-deck').html("Right now, <em class = 'negative'>the stock market is down</em> since we shorted it. </br>That's bad for most people, but good for us.");
-}
+// if (dailyChange < 0) {
+//     $('.reply-deck').html("Right now, <em class = 'negative'>the stock market is down</em> since we shorted it. </br>That's bad for most people, but good for us.");
+// }
 
 }
 
